@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+    <title>Enhanced LRC Maker</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="media/colorbox/jquery.colorbox-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="media/screen.css">
+    <link rel="stylesheet" type="text/css" href="media/colorbox/colorbox.css">
+</head>
+<body>
+
+<div id="controls">
+    <h2>ELRC Maker</h2>
+
+
+    <button class='faster'>Faster</button>
+    <button class='slower'>Slower</button>
+    Speed: <span class='speed'>1.0</span>
+    Position: <span class='position'>-</span>
+
+    <div>
+        <button class='import'>Import</button>
+        <button class='export'>Export</button>
+        <button class='help'>Help</button>
+    </div>
+</div>
+
+<audio controls="controls">
+  <source src="onething.m4a" type="audio/mpeg" />
+</audio>
+
+<div id="lyrics"></div>
+
+<div id="dialogs">
+    <div id="import">
+        <textarea></textarea><br>
+        <button>Laden</button>
+    </div>
+    <div id="help">
+        <h3>ELRC Maker Help</h3>
+        <p>
+            Use Drag&Drop to load audio files.
+            Use Drag&Drop to load lyrics text files.
+        </p>
+        <p>
+            When playing, left click a word to flag it with the current timestamp.
+            <br>
+            Right click a word to play from shortly before that position.
+        </p>
+    </div>
+</div>
+
+<script src="media/lyrics.js"></script>
+<script>
+    $(function() {
+        // Currently loaded Audio/Lyrics
+        var lyrics = new Lyrics();
+        var audio = $('audio')[0];
+
+        // The Lyrics object needs the duration, not available right away.
+        audio.addEventListener('durationchange',
+            function() { lyrics.duration = audio.duration; });
+
+        // Enable speed controls
+        function setPlaybackRate(rate) {
+            var newRate = audio.playbackRate;
+            if (rate.constructor == Number)
+                newRate = rate;
+            else
+                newRate += parseFloat(rate);
+            newRate = Math.max(newRate, 0.5);
+            audio.playbackRate = newRate;
+            $('#controls .speed').text(newRate.toFixed(3));
+
+        }
+        $('.faster').click(function() { setPlaybackRate('+0.1'); });
+        $('.slower').click(function() { setPlaybackRate('-0.1'); });
+        setPlaybackRate(1.0);
+
+        function updatePosition() {
+            $('.position').text(
+                Lyrics.toTimer(audio.currentTime) + ' / ' +
+                Lyrics.toTimer(audio.duration));
+        }
+        audio.addEventListener('timeupdate', updatePosition);
+        updatePosition();
+
+        // Enable export/import buttons
+        $('.export').click(function() {
+            $.colorbox({html: '<textarea id="export">'+lyrics.toELRC()+'</textarea>'});
+        });
+        $('.import').click(function() {
+            $.colorbox({href: '#import', inline: true});
+        });
+        $('.help').click(function() {
+            $.colorbox({href: '#help', inline: true});
+        });
+
+        // The Lyrics controller
+        var lyricsBox = new LyricsBox('#lyrics', audio);
+
+        // The load-text dialog.
+        $('#import button').on('click', function() {
+            lyrics = Lyrics.fromText($('#import textarea').val());
+            lyricsBox.setLyrics(lyrics);
+            // close colorbox!
+        });
+
+        // Enable drag&drop of audio files
+        $('body').on('dragenter dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $('body').on('drop', function (event) {
+            var data = event.originalEvent.dataTransfer;
+            // originalEvent required, dataTransfer not in jQuery.event.props
+            for (var i = 0; i < data.files.length; i++) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(e) {
+                    audio.src = e.target.result;
+                };
+                fileReader.readAsArrayBuffer(data.files[i]);
+
+                // Only one file supported
+                break;
+            }
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

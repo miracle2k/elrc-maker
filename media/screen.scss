@@ -1,0 +1,88 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+/** Controlbar on top. **/
+#controls {
+  padding: 5px;
+  background-color: black;
+  color: white;
+  background-image: -webkit-linear-gradient(bottom, rgb(0,0,0) 19%, rgb(84,82,80) 76%);
+  -webkit-user-select: none;
+  overflow: auto;
+
+  // Logo left
+  h2 {
+    display: inline;
+    float: left;
+    font-size: 16px;
+    text-shadow: -1px -1px rgba(255, 255, 255, 0.5);
+    margin: 3px 10px 0 0;
+  }
+
+  // Buttons right
+  div {
+    float: right;
+  }
+
+  // The rest centered
+  text-align: center;
+}
+
+audio {
+  width: 100%;
+}
+
+#lyrics {
+  margin: 20px;
+  width: 800px;
+  margin: 20px auto;
+
+  font-size: 20px;
+  line-height: 1.7em;
+
+  span {
+    // Words marked with a timestamp
+    &.timed {
+      text-decoration: underline;
+    }
+  }
+
+  &.playing span {
+    cursor: pointer;
+    // Selecting text only bothers the user while working with the lyrics
+    -webkit-user-select: none;
+
+    // Current word when playing
+    &.current {
+      color: green;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+}
+
+
+/** Dialog windows **/
+
+#dialogs {
+  display: none;
+}
+
+
+#import {
+  textarea {
+    width: 800px;
+    height: 800px;
+  }
+}
+
+#export {
+  width: 500px;
+  height: 800px;  // Would be cool if this could be % of window height
+  max-height: 800px;
+}
