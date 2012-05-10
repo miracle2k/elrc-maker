@@ -223,7 +223,6 @@ LyricsBox.prototype.update = function() {
     for (var index = 0; index<this.lyrics.length; index++) {
         var word = this.lyrics[index];
         var elem = $('<span>'+word.text+'</span>');
-        elem.append(' ');
         // TODO: Can be sped up by using a single handler for all spans.
         (function(word, index) {
             elem.click(function(e) {
@@ -246,5 +245,6 @@ LyricsBox.prototype.update = function() {
         })(word, index);
         word.dom = elem;
         this.container.append(elem);
+        this.container.append(' ');
     }
 };
