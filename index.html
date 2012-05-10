@@ -23,6 +23,7 @@
     <div>
         <button class='import'>Import</button>
         <button class='export'>Export</button>
+        <button class='save'>Save</button>
         <button class='help'>Help</button>
     </div>
 </div>
@@ -97,6 +98,9 @@
         $('.help').click(function() {
             $.colorbox({href: '#help', inline: true});
         });
+        $('.save').click(function() {
+            localStorage['lyrics'] = JSON.stringify(lyrics);
+        });
 
         // The Lyrics controller
         var lyricsBox = new LyricsBox('#lyrics', audio);
@@ -115,8 +119,18 @@
 
             lyrics = Lyrics.fromText(text, audio.duration);
             lyricsBox.setLyrics(lyrics);
+
+            // Store in local storage, so it won't be lost in reload
+            localStorage['lyrics'] = JSON.stringify(lyrics);
+
             // close colorbox!
         });
+
+        // Load lyrics from localStorage if there is anything
+        if (localStorage['lyrics']) {
+            lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
+            lyricsBox.setLyrics(lyrics);
+        }
 
         // Enable drag&drop of audio files
         $('body').on('dragenter dragover', function(e) {

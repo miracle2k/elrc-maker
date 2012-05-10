@@ -139,6 +139,39 @@ Lyrics.prototype.toELRC = function() {
 }
 
 
+/**
+ * Persist as JSON. Implements to JSON.stringify() protocol.
+ *
+ * @return {*}
+ */
+Lyrics.prototype.toJSON = function() {
+    // Do not include the dom element.
+    return $.map(this, function(item) {
+        return {text:item.text, time:item.time}; })
+}
+
+
+/**
+ * Create a new instance based on the given JSON string.
+ * @param json
+ * @param duration
+ * @return {Lyrics}
+ */
+Lyrics.fromJSON = function(json, duration) {
+    var words = JSON.parse(json);
+    var lyrics = new Lyrics(duration);
+    lyrics.push.apply(lyrics, words);
+    return lyrics;
+}
+
+
+/**
+ * Creates a new instance based on the given text.
+ *
+ * @param text Will be splitted at whitespace boundaries.
+ * @param duration
+ * @return {Lyrics}
+ */
 Lyrics.fromText = function(text, duration) {
     splitted = $.map(text.split(/\s+/g), function(item) {
         return {text: item, time: null};
