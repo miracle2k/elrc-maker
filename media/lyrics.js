@@ -173,10 +173,10 @@ Lyrics.fromJSON = function(json, duration) {
  * @return {Lyrics}
  */
 Lyrics.fromText = function(text, duration) {
-    splitted = $.map(text.split(/\s+/g), function(item) {
+    var splitted = $.map(text.split(/\s+/g), function(item) {
         return {text: item, time: null};
     });
-    lyrics = new Lyrics(duration);
+    var lyrics = new Lyrics(duration);
     lyrics.push.apply(lyrics, splitted);
     return lyrics;
 }
