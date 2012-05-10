@@ -34,6 +34,11 @@ audio {
   width: 100%;
 }
 
+@keyframes highlight {
+  from { background: #FF5F4B }
+  to { background: none; }
+}
+
 #lyrics {
   margin: 20px;
   width: 800px;
@@ -46,6 +51,9 @@ audio {
     // Words marked with a timestamp
     &.timed {
       text-decoration: underline;
+    }
+    &.updated {
+      animation: highlight 1s;
     }
   }
 

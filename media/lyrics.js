@@ -270,6 +270,14 @@ LyricsBox.prototype.update = function() {
                 word.time = audio.currentTime;
                 $(this).addClass('timed');
                 $(this).attr('title', Lyrics.toTimer(word.time));
+                $(this).addClass('updated');
+                // I'd like the animation to be defined in CSS, but this
+                // is a) vendor specific and b) does't react to multiple
+                // fast clicks (while the animation is still ongoing) the
+                // way it is supposed to. TODO: find better solution.
+                $(this).on('webkitAnimationEnd', function() {
+                    $(this).removeClass('updated');
+                });
             });
 
             // On right click, start playing from that word's position.
