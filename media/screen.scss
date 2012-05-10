@@ -9,7 +9,7 @@ body {
   background-color: black;
   color: white;
   background-image: -webkit-linear-gradient(bottom, rgb(0,0,0) 19%, rgb(84,82,80) 76%);
-  -webkit-user-select: none;
+  user-select: none;
   overflow: auto;
 
   // Logo left
@@ -52,7 +52,7 @@ audio {
   &.playing span {
     cursor: pointer;
     // Selecting text only bothers the user while working with the lyrics
-    -webkit-user-select: none;
+    user-select: none;
 
     // Current word when playing
     &.current {
