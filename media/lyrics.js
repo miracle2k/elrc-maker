@@ -139,11 +139,11 @@ Lyrics.prototype.toELRC = function() {
 }
 
 
-Lyrics.fromText = function(text) {
-    splitted = $.map(text.split(' '), function(item) {
+Lyrics.fromText = function(text, duration) {
+    splitted = $.map(text.split(/\s+/g), function(item) {
         return {text: item, time: null};
     });
-    lyrics = new Lyrics();
+    lyrics = new Lyrics(duration);
     lyrics.push.apply(lyrics, splitted);
     return lyrics;
 }

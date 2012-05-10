@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
     <title>Enhanced LRC Maker</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="media/utils.js"></script>
     <script src="media/colorbox/jquery.colorbox-min.js"></script>
     <link rel="stylesheet" type="text/css" href="media/screen.css">
     <link rel="stylesheet" type="text/css" href="media/colorbox/colorbox.css">
@@ -102,7 +103,17 @@
 
         // The load-text dialog.
         $('#import button').on('click', function() {
-            lyrics = Lyrics.fromText($('#import textarea').val());
+            var text = $('#import textarea').val();
+
+            // Support a special JSON format that only I am using.s
+            try {
+                var json = jQuery.parseJSON(text);
+                if (json.text)
+                    text = cleanText(json.text);
+            }
+            catch (e) {}
+
+            lyrics = Lyrics.fromText(text, audio.duration);
             lyricsBox.setLyrics(lyrics);
             // close colorbox!
         });
