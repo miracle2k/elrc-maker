@@ -150,7 +150,9 @@ Lyrics.fromText = function(text, duration) {
 
 
 /**
- * from buzz.media
+ * Format a time in seconds in human readable form.
+ *
+ * From the  Buzz! HTML 5 audio player library.
  *
  * @param time
  * @param withHours
