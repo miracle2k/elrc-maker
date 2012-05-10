@@ -224,14 +224,22 @@ LyricsBox.prototype.update = function() {
         var word = this.lyrics[index];
         var elem = $('<span>'+word.text+'</span>');
         // TODO: Can be sped up by using a single handler for all spans.
-        (function(word, index) {
-            elem.click(function(e) {
+        (function(word, index)
+        {
+            // When playing, a left click connects the word with the current
+            // playing position. Use "mousedown" here (instead of click),
+            // which is closer to the time the user actually decided to click.
+            elem.mousedown(function(e) {
+                if (e.which !== 1)
+                    return;
                 if (audio.paused)
                     return;
                 word.time = audio.currentTime;
                 $(this).addClass('timed');
                 $(this).attr('title', Lyrics.toTimer(word.time));
             });
+
+            // On right click, start playing from that word's position.
             elem.on('contextmenu', function(e) {
                 var goto = word.time;
                 if (goto == null) {
