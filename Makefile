@@ -1,6 +1,5 @@
 all:
-	sass media/screen.scss:media/screen.css
-	cssprefixer media/screen.css > media/screen.final.css
+	webassets -c assets.yml build
 
 watch:
-	sass --watch media/screen.scss:media/screen.css
+	webassets -c assets.yml watch

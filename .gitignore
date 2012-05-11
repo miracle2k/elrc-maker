@@ -1,3 +1,4 @@
-/.sass-cache/
+.sass-cache/
+.webassets-cache/
 /BRANCH_TODO
 /.idea/

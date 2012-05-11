@@ -1,0 +1,13 @@
+directory: app/media
+url: /
+
+bundles:
+    css:
+        output: screen.css
+        filters: cssrewrite,cssprefixer
+        contents:
+            - colorbox/colorbox.css
+            - filters: scss
+              depends: "*.scss"
+              contents:
+                  - screen.scss
