@@ -1,13 +1,22 @@
-directory: app/media
+debug: merge
+directory: app
 url: /
 
 bundles:
     css:
-        output: screen.css
-        filters: cssrewrite,cssprefixer
+        # Need to run cssutils BEFORE cssprefixer, or cssprefixer
+        # stumbles over the comments within @keyframes.
+        filters: cssrewrite,scss,cssutils,cssprefixer
         contents:
-            - colorbox/colorbox.css
-            - filters: scss
-              depends: "*.scss"
-              contents:
-                  - screen.scss
+            - css/screen.scss
+        depends:
+            - "css/*.scss"
+        output: screen.css
+
+    js:
+        output: merged.js
+        filters: uglifyjs
+        contents:
+             - bootstrap/js/bootstrap-modal.js
+             - js/lyrics.js
+             - js/utils.js

@@ -1,0 +1,150 @@
+/******************************************************************************
+  Base styles.
+ ******************************************************************************/
+
+@import "reset";
+
+$baseFontSize: 13px;
+$baseLineHeight: 18px;
+
+@import "type";
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: $baseFontSize;
+  line-height: $baseLineHeight;
+  color: #333;
+  background-color: white;
+}
+
+$linkColor: #08c;
+a {
+  color: $linkColor;
+  text-decoration: none;
+}
+a:hover {
+  color: darken($linkColor, 15%);
+  text-decoration: underline;
+}
+
+
+/******************************************************************************
+  Page structure and style.
+ ******************************************************************************/
+
+@import "bootstrap";
+
+.button { @include button; }
+
+
+body {
+  // Account for navbar
+  padding-top: $navbarHeight;
+
+  .container {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+// Navbar on top
+#controls {
+  user-select: none;
+
+  @include navbar;
+  @include navbar-top;
+  ul {
+    @include navbar-links;
+    float: right
+  }
+}
+
+// The audio player
+audio {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+
+// Introduction text upon start when no lyrics are loaded
+#introduction {
+  @include hero-unit;
+  a.import-lyrics {
+    @include button;
+    @include button-large;
+    @include button-primary;
+  }
+  a.show-help {
+    @include button;
+    @include button-large;
+  }
+}
+
+// The lyrics box
+@keyframes highlight {
+  from { background: #FF5F4B }
+  to { background: none; }
+}
+
+#lyrics {
+  display: none;
+  margin: 20px;
+  width: 800px;
+  margin: 20px auto;
+
+  font-size: 20px;
+  line-height: 1.7em;
+
+  span {
+    // Words marked with a timestamp
+    &.timed {
+      text-decoration: underline;
+    }
+    &.updated {
+      animation: highlight 1s;
+    }
+  }
+
+  &.playing span {
+    cursor: pointer;
+    // Selecting text only bothers the user while working with the lyrics
+    user-select: none;
+
+    // Current word when playing
+    &.current {
+      color: green;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+}
+
+
+/******************************************************************************
+  Page structure and style.
+ ******************************************************************************/
+
+
+.modal {
+  display: none;
+  @include modal;
+}
+
+
+#import {
+  textarea {
+    width: 90%;
+    height: 350px;
+  }
+}
+
+#export {
+  width: 500px;
+  height: 800px;  // Would be cool if this could be % of window height
+  max-height: 800px;
+}

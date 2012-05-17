@@ -4,26 +4,27 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
     <title>Enhanced LRC Maker</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script src="media/utils.js"></script>
-    <script src="media/colorbox/jquery.colorbox-min.js"></script>
-    <link rel="stylesheet" type="text/css" href="media/screen.css">
+    <link rel="stylesheet" type="text/css" href="screen.css">
 </head>
 <body>
 
+
 <div id="controls">
-    <h2>ELRC Maker</h2>
-
-
-    <button class='faster'>Faster</button>
-    <button class='slower'>Slower</button>
-    Speed: <span class='speed'>1.0</span>
-    Position: <span class='position'>-</span>
-
     <div>
-        <button class='import'>Import</button>
-        <button class='export'>Export</button>
-        <button class='save'>Save</button>
-        <button class='help'>Help</button>
+        <div class="container">
+                <button class='btn faster'>Faster</button>
+                <button class='btn slower'>Slower</button>
+                <!--Speed: <span class='speed'>1.0</span>
+                Position: <span class='position'>-</span>-->
+
+
+            <ul>
+                <li><a href='#' class='import-lyrics'>Import</a></li>
+                <li><a href='#'>Export</a></li>
+                <li><a href='#'>Save</a></li>
+                <li><a href='#' class='show-help'>Help</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -31,15 +32,45 @@
   <source src="onething.m4a" type="audio/mpeg" />
 </audio>
 
-<div id="lyrics"></div>
 
-<div id="dialogs">
-    <div id="import">
-        <textarea></textarea><br>
-        <button>Laden</button>
+<div class="container">
+
+    <div id="lyrics"></div>
+
+    <div id="introduction">
+        <h1>Maker of Enhanced LRCs</h1>
+        <p>This tool will help you create
+            <a href="http://en.wikipedia.org/wiki/LRC_(file_format)#Enhanced_format">Enhanced LRC files</a>
+            (where every word can be assigned a timestamp).
+        </p>
+        <p>
+            After loading both an audio file and the lyrics text, you use
+            mouse or keyboard to connect the correct word with the current
+            playing position.
+        </p>
+        <p>
+            Start by dragging & dropping an audio and a text file from your
+            computer into this window. You can also load lyrics using the
+            <em>Import</em> feature.
+        </p>
+        <p>
+            <a class="import-lyrics">
+              Import lyrics
+            </a>
+            <a class="show-help">
+              Show detailed Help
+            </a>
+          </p>
     </div>
-    <div id="help">
+</div>
+
+
+<div id="help" class="modal">
+    <div class="header">
+        <button class="close" data-dismiss="modal">×</button>
         <h3>ELRC Maker Help</h3>
+    </div>
+    <div class="body">
         <p>
             Use Drag&Drop to load audio files.
             Use Drag&Drop to load lyrics text files.
@@ -50,9 +81,32 @@
             Right click a word to play from shortly before that position.
         </p>
     </div>
+    <div class="footer">
+        <a href="#" class="button">Close</a>
+    </div>
 </div>
 
-<script src="media/lyrics.js"></script>
+<div id="import" class="modal">
+    <div class="header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Import</h3>
+    </div>
+    <div class="body">
+        <p>
+            Paste some text here. <br>
+            <em><i class="icon-exclamation-sign"></i>This
+            will overwrite your current lyrics, and remove all timestamps
+            that have already been assigned!</em>
+        </p>
+        <textarea></textarea><br>
+    </div>
+    <div class="footer">
+        <a href="#" class="button">Load</a>
+    </div>
+</div>
+
+
+<script src="merged.js"></script>
 <script>
     $(function() {
         // Currently loaded Audio/Lyrics
@@ -91,12 +145,9 @@
         $('.export').click(function() {
             $.colorbox({html: '<textarea id="export">'+lyrics.toELRC()+'</textarea>'});
         });
-        $('.import').click(function() {
-            $.colorbox({href: '#import', inline: true});
-        });
-        $('.help').click(function() {
-            $.colorbox({href: '#help', inline: true});
-        });
+        $('.import-lyrics').click(function() { $('#import').modal(); });
+        $('.show-help').click(function() { $('#help').modal(); });
+        $('#help .button').click(function() { $('#help').modal('hide'); });
         $('.save').click(function() {
             localStorage['lyrics'] = JSON.stringify(lyrics);
         });
@@ -105,7 +156,7 @@
         var lyricsBox = new LyricsBox('#lyrics', audio);
 
         // The load-text dialog.
-        $('#import button').on('click', function() {
+        $('#import .button').on('click', function() {
             var text = $('#import textarea').val();
 
             // Support a special JSON format that only I am using.s
@@ -122,13 +173,20 @@
             // Store in local storage, so it won't be lost in reload
             localStorage['lyrics'] = JSON.stringify(lyrics);
 
-            // close colorbox!
+            // Hide introduction, show, show lyrics
+            $('#introduction').slideUp();
+            $('#lyrics').slideDown();
+
+            // Close dialog
+            $('#import').modal('hide');
         });
 
         // Load lyrics from localStorage if there is anything
         if (localStorage['lyrics']) {
             lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
             lyricsBox.setLyrics(lyrics);
+            $('#introduction').hide();
+            $('#lyrics').show();
         }
 
         // Enable drag&drop of audio files
