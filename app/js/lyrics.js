@@ -233,6 +233,11 @@ LyricsBox = function(selector, audio, lyrics) {
         function() { container.addClass('playing') });
     audio.addEventListener('pause',
         function() { container.removeClass('playing') });
+
+    // Disable right click on the whole box. The word have their own
+    // handlers, but accidental clicking next to a word shouldn't
+    // interrupt with a context menu.
+    this.container.on('contextmenu', function() { return false; });
 };
 
 /**
