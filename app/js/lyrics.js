@@ -1,3 +1,10 @@
+/**
+ * This currently uses jQuery({}} as an event system for non-DOM objects, but
+ * if there is any trouble with that (memory leaks? handlers seem to be stored
+ * globally, retrieve via $._data()), we could switch to something like
+ * https://github.com/Wolfy87/EventEmitter.
+ */
+
 function AssertException(message) { this.message = message; }
 AssertException.prototype.toString = function () {
     return 'AssertException: ' + this.message;
@@ -24,6 +31,32 @@ Lyrics = function(duration) {
 
 }
 Lyrics.prototype = new Array();
+
+
+/**
+ * Set the timestamp for the word at the given index.
+ *
+ * Will validate all timestamp of subsequent words accordingly.
+ *
+ * Will trigger a "timeChanged" event for every change made.
+ *
+ * @param index
+ * @param time
+ */
+Lyrics.prototype.setTimeOfWord = function(index, time) {
+    this[index].time = time;
+    $(this).trigger('timeChanged', [index, time]);
+
+    // Search subsequent words, and remove any timestamps that have
+    // become invalid (due to being older than the current word).
+    for (var i=index+1; i<this.length; i++) {
+        if (this[i].time && this[i].time <= time) {
+            console.log('remove', i);
+            this[i].time = null;
+            $(this).trigger('timeChanged', [i, null]);
+        }
+    }
+}
 
 /**
  * Return the word index for the given timestamp.
@@ -249,16 +282,18 @@ LyricsBox.prototype.setLyrics = function(lyrics) {
     this.lyrics = lyrics;
     if (this.lyrics)
         this.update();
-}
+};
 
 /**
  * Re-render the UI.
  */
 LyricsBox.prototype.update = function() {
-    this.container.empty();
+    var container = this.container;
     var audio = this.audio;
-    var this$LyricsBox = this;
+    var lyrics = this.lyrics;
 
+    // Generate a list of words.
+    this.container.empty();
     for (var index = 0; index<this.lyrics.length; index++) {
         var word = this.lyrics[index];
         var elem = $('<span>'+word.text+'</span>');
@@ -273,24 +308,14 @@ LyricsBox.prototype.update = function() {
                     return;
                 if (audio.paused)
                     return;
-                word.time = audio.currentTime;
-                $(this).addClass('timed');
-                $(this).attr('title', Lyrics.toTimer(word.time));
-                $(this).addClass('updated');
-                // I'd like the animation to be defined in CSS, but this
-                // is a) vendor specific and b) does't react to multiple
-                // fast clicks (while the animation is still ongoing) the
-                // way it is supposed to. TODO: find better solution.
-                $(this).on('webkitAnimationEnd', function() {
-                    $(this).removeClass('updated');
-                });
+                lyrics.setTimeOfWord(index, audio.currentTime);
             });
 
             // On right click, start playing from that word's position.
             elem.on('contextmenu', function(e) {
                 var goto = word.time;
                 if (goto == null) {
-                    goto = this$LyricsBox.lyrics.getApproximateTime(index);
+                    goto = lyrics.getApproximateTime(index);
                 }
                 audio.play();
                 audio.currentTime = goto - 1.5;  // go to shortly before
@@ -302,4 +327,28 @@ LyricsBox.prototype.update = function() {
         this.container.append(elem);
         this.container.append(' ');
     }
+
+    // As timestamps are assigned and removed, update the style of the words
+    $(this.lyrics).on('timeChanged', function(e, index, time) {
+        var word = container.find('span').eq(index);
+        if (time) {
+            word.addClass('timed');
+            word.attr('title', Lyrics.toTimer(time));
+        }
+        else {
+            word.removeClass('timed');
+            word.attr('title', '');
+        }
+
+        // Indicate a change of value regardless of whether the timestamp
+        // was removed or added.
+        word.addClass('updated');
+        // I'd like the animation to be defined in CSS, but this
+        // is a) vendor specific and b) does't react to multiple
+        // fast clicks (while the animation is still ongoing) the
+        // way it is supposed to. TODO: find better solution.
+        word.on('webkitAnimationEnd', function() {
+            word.removeClass('updated');
+        });
+    })
 };
