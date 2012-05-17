@@ -107,18 +107,22 @@ audio {
     }
   }
 
-  &.playing span {
-    cursor: pointer;
+  &.playing {
     // Selecting text only bothers the user while working with the lyrics
     user-select: none;
 
-    // Current word when playing
-    &.current {
-      color: green;
-    }
+    span {
+      cursor: pointer;
 
-    &:hover {
-      text-decoration: underline;
+
+      // Current word when playing
+      &.current {
+        color: green;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
