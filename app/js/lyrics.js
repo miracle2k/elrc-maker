@@ -257,6 +257,7 @@ LyricsBox.prototype.setLyrics = function(lyrics) {
 LyricsBox.prototype.update = function() {
     this.container.empty();
     var audio = this.audio;
+    var this$LyricsBox = this;
 
     for (var index = 0; index<this.lyrics.length; index++) {
         var word = this.lyrics[index];
@@ -289,7 +290,7 @@ LyricsBox.prototype.update = function() {
             elem.on('contextmenu', function(e) {
                 var goto = word.time;
                 if (goto == null) {
-                    goto = lyrics.getApproximateTime(index);
+                    goto = this$LyricsBox.lyrics.getApproximateTime(index);
                 }
                 audio.play();
                 audio.currentTime = goto - 1.5;  // go to shortly before
