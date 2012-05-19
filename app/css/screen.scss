@@ -105,6 +105,9 @@ audio {
     &.updated {
       animation: highlight 1s;
     }
+    &.cursor {
+      border-bottom: dotted 1px green;
+    }
   }
 
   &.playing {

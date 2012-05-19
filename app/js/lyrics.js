@@ -240,7 +240,7 @@ Lyrics.toTimer = function(time, withHours) {
 
 /**
  * Controller that renders lyrics, and allows interaction (i.e. set
- * timestamps).
+ * timestamps via mouse/keyboard).
  *
  * @param selector DOM element to use as a container.
  * @param audio HTML5 audio element to which the lyrics belong.
@@ -271,6 +271,18 @@ LyricsBox = function(selector, audio, lyrics) {
     // handlers, but accidental clicking next to a word shouldn't
     // interrupt with a context menu.
     this.container.on('contextmenu', function() { return false; });
+
+    // Setup assigning timestamps by keypress.
+    $(document).on('keydown', function(e) {
+        if (e.keyCode == 32)  { // Space key
+            // Assign time to current index, then move cursor forward if
+            // that was successful.
+            if (self._assignTime(self.keyboardCursorIndex)) {
+                self.setKeyboardCursorIndex(self.keyboardCursorIndex+1);
+                return false;
+            }
+        }
+    });
 };
 
 /**
@@ -280,14 +292,18 @@ LyricsBox = function(selector, audio, lyrics) {
  */
 LyricsBox.prototype.setLyrics = function(lyrics) {
     this.lyrics = lyrics;
-    if (this.lyrics)
+    if (this.lyrics) {
         this.update();
+        // Reset the keyboard cursor.
+        this.setKeyboardCursorIndex();
+    }
 };
 
 /**
  * Re-render the UI.
  */
 LyricsBox.prototype.update = function() {
+    var self = this;
     var container = this.container;
     var audio = this.audio;
     var lyrics = this.lyrics;
@@ -306,9 +322,8 @@ LyricsBox.prototype.update = function() {
             elem.mousedown(function(e) {
                 if (e.which !== 1)
                     return;
-                if (audio.paused)
-                    return;
-                lyrics.setTimeOfWord(index, audio.currentTime);
+                self._assignTime(index);
+                self.setKeyboardCursorIndex(index+1);
             });
 
             // On right click, start playing from that word's position.
@@ -347,8 +362,36 @@ LyricsBox.prototype.update = function() {
         // is a) vendor specific and b) does't react to multiple
         // fast clicks (while the animation is still ongoing) the
         // way it is supposed to. TODO: find better solution.
-        word.on('webkitAnimationEnd', function() {
+        word.one('webkitAnimationEnd', function() {
             word.removeClass('updated');
         });
-    })
-};
+    });
+}
+
+/**
+ * Set a time value for the given index, if possible.
+ *
+ * Internal usage, does some validation.
+ */
+LyricsBox.prototype._assignTime = function(index) {
+    if (this.audio.paused)
+        return;
+    if (index >= this.lyrics.length)
+        return;
+    this.lyrics.setTimeOfWord(index, this.audio.currentTime);
+    return true;
+}
+
+
+/**
+ * Set a time value for the given index, if possible.
+ *
+ * Internal usage, does some validation.
+ */
+LyricsBox.prototype.setKeyboardCursorIndex = function(index) {
+    var spans = this.container.find('span');
+    if (this.keyboardCursorIndex != undefined)
+        spans.eq(this.keyboardCursorIndex).removeClass('cursor');
+    this.keyboardCursorIndex = (index == undefined) ? 0 : index;
+    spans.eq(this.keyboardCursorIndex).addClass('cursor');
+}
