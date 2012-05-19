@@ -275,17 +275,25 @@ LyricsBox = function(selector, audio, lyrics) {
 
     // Setup assigning timestamps by keypress.
     $(document).on('keydown', function(e) {
+        if (e.ctrlKey)
+            // Because various ctrl+X keys are used as a global shortcut as
+            // well, and this means we don't have to worry about handler order.
+            return;
         if (e.keyCode == 32)  { // Space key
-            if (e.ctrlKey)
-                // Because ctrl+space is used as a global shortcut, and
-                // this means we don't have to worry about handler order.
-                return;
             // Assign time to current index, then move cursor forward if
             // that was successful.
             if (self._assignTime(self.keyboardCursorIndex)) {
                 self.setKeyboardCursorIndex(self.keyboardCursorIndex+1);
                 return false;
             }
+        }
+        else if (e.keyCode == 39) { // right arrow
+            self.setKeyboardCursorIndex(self.keyboardCursorIndex+1);
+            return false;
+        }
+        else if (e.keyCode == 37) { // left arrow
+            self.setKeyboardCursorIndex(self.keyboardCursorIndex-1);
+            return false;
         }
     });
 };
@@ -394,9 +402,19 @@ LyricsBox.prototype._assignTime = function(index) {
  * Internal usage, does some validation.
  */
 LyricsBox.prototype.setKeyboardCursorIndex = function(index) {
+    // Validate the incoming value. If no index is given, reset to 0.
+    index = (index == undefined) ? 0 : index;
+    index = Math.max(0, Math.min(index, this.lyrics.length-1));
+    if (index == this.keyboardCursorIndex)
+        return;
+
+    // Clear the old cursor
     var spans = this.container.find('span');
     if (this.keyboardCursorIndex != undefined)
         spans.eq(this.keyboardCursorIndex).removeClass('cursor');
-    this.keyboardCursorIndex = (index == undefined) ? 0 : index;
+
+    this.keyboardCursorIndex = index;
+
+    // Set the new cursor
     spans.eq(this.keyboardCursorIndex).addClass('cursor');
 }
