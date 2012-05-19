@@ -207,7 +207,8 @@ Lyrics.fromJSON = function(json, duration) {
  */
 Lyrics.fromText = function(text, duration) {
     var splitted = $.map(text.split(/\s+/g), function(item) {
-        return {text: item, time: null};
+        if (item)
+            return {text: item, time: null};
     });
     var lyrics = new Lyrics(duration);
     lyrics.push.apply(lyrics, splitted);
@@ -312,7 +313,7 @@ LyricsBox.prototype.update = function() {
     this.container.empty();
     for (var index = 0; index<this.lyrics.length; index++) {
         var word = this.lyrics[index];
-        var elem = $('<span>'+word.text+'</span>');
+        var elem = $('<span>'+(word.text?word.text:'-')+'</span>');
         // TODO: Can be sped up by using a single handler for all spans.
         (function(word, index)
         {
