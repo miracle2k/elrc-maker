@@ -230,6 +230,18 @@
                     return false;
                 }
             }
+            else if (e.keyCode == 37) {  // left
+                if (e.ctrlKey) {
+                    audio.currentTime -= 1;
+                    return false;
+                }
+            }
+            else if (e.keyCode == 39) {  // right
+                if (e.ctrlKey) {
+                    audio.currentTime += 1;
+                    return false;
+                }
+            }
         });
 
         window.geLyrics = function() { return lyrics };
