@@ -72,14 +72,63 @@
     </div>
     <div class="body">
         <p>
-            Use Drag&Drop to load audio files.
-            Use Drag&Drop to load lyrics text files.
+            The general principle is that you load a text file with the
+            subtitles/lyrics, and you load an audio file. While playing the
+            audio file with reduced speed, you assigned each word with the
+            current playing position.
         </p>
         <p>
-            When playing, left click a word to flag it with the current timestamp.
-            <br>
-            Right click a word to play from shortly before that position.
+            This can be done using the mouse, by simply clicking the word, or
+            by using the keyboard, which advances a <em>keyboard cursor</em>
+            through the text.
         </p>
+        <p>
+            The current word based on the timestamps already set will be
+            highlighted in green color. If a word does not have a timestamp
+            assigned, it's position will be guessed based on the timestamps
+            already set.
+        </p>
+        <h4>Getting started</h4>
+        <p>
+            Load an audio file dragging it from your local computer and
+            dropping it inside the browser window. Load lyrics by dragging
+            a text file by dragging and dropping a text file from your local
+            computer. You can also load lyrics via the <em>Import</em> menu
+            options.
+        </p>
+        <h4>Mouse mode</h4>
+        <dl>
+            <dt>Left click on a word</dt>
+                <dd>Associate the word with the current timestamp
+                    (only while playing). This also moves the keyboard cursor.
+                </dd>
+            <dt>Right click on a word</dt>
+                <dd>Set the play position to shortly before the word. If the
+                    word has no time attached, the position will be guessed.
+                </dd>
+        </dl>
+        <h4>Keyboard mode</h4>
+        <dl>
+            <dt>Left Arrow / Right Arrow</dt>
+                <dd>Move the keyboard cursor forward/backwards to the text.
+                </dd>
+            <dt>Space</dt>
+                <dd>Associated the word the keyboard cursor is at with the
+                    current play position. Move the keyboard cursor one word
+                    forward.
+                </dd>
+        </dl>
+        <h4>Global shortcuts</h4>
+        <dl>
+            <dt>Space</dt>
+                <dd>Start to play.</dd>
+            <dt>Ctrl+Space</dt>
+                <dd>Stop to play.</dd>
+            <dt>Ctrl+Left Arrow / Ctrl+Right Arrow</dt>
+                <dd>Skip play position forward or backward.</dd>
+            <dt>Up Arrow / Down Arrow</dt>
+                <dd>Increase / decrease the play speed.</dd>
+        </dl>
     </div>
     <div class="footer">
         <a href="#" class="button">Close</a>
