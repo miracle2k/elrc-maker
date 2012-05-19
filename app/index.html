@@ -14,8 +14,8 @@
         <div class="container">
                 <button class='btn faster'>Faster</button>
                 <button class='btn slower'>Slower</button>
-                <!--Speed: <span class='speed'>1.0</span>
-                Position: <span class='position'>-</span>-->
+                Speed: <span class='speed'>1.0</span>
+                Position: <span class='position'>-</span>
 
 
             <ul>
@@ -208,6 +208,18 @@
                 break;
             }
             return false;
+        });
+
+        // Keyboard shortcuts to skip forward/backward/change speed.
+        $(document).on('keydown', function(e) {
+            if (e.keyCode == 38) { // up
+                setPlaybackRate('+0.1');
+                return false;
+            }
+            else if (e.keyCode == 40) {  // down
+                setPlaybackRate('-0.1');
+                return false;
+            }
         });
     });
 </script>
