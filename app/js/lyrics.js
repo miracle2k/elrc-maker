@@ -276,6 +276,10 @@ LyricsBox = function(selector, audio, lyrics) {
     // Setup assigning timestamps by keypress.
     $(document).on('keydown', function(e) {
         if (e.keyCode == 32)  { // Space key
+            if (e.ctrlKey)
+                // Because ctrl+space is used as a global shortcut, and
+                // this means we don't have to worry about handler order.
+                return;
             // Assign time to current index, then move cursor forward if
             // that was successful.
             if (self._assignTime(self.keyboardCursorIndex)) {
