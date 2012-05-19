@@ -335,8 +335,13 @@ LyricsBox.prototype.update = function() {
             elem.mousedown(function(e) {
                 if (e.which !== 1)
                     return;
-                self._assignTime(index);
-                self.setKeyboardCursorIndex(index+1);
+                if (self._assignTime(index))
+                    self.setKeyboardCursorIndex(index+1);
+                else
+                    // If assign time fails (usually because we're not
+                    // playing, set the keyboard cursor the the word that was
+                    // clicked, instead of the next word.
+                    self.setKeyboardCursorIndex(index);
             });
 
             // On right click, start playing from that word's position.
