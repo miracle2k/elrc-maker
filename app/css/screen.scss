@@ -151,7 +151,9 @@ audio {
 }
 
 #export {
-  width: 500px;
-  height: 800px;  // Would be cool if this could be % of window height
-  max-height: 800px;
+  textarea {
+    width: 500px;
+    height: 800px;  // Would be cool if this could be % of window height
+    max-height: 800px;
+  }
 }

@@ -19,7 +19,7 @@
 
             <ul>
                 <li><a href='#' class='import-lyrics'>Import</a></li>
-                <li><a href='#'>Export</a></li>
+                <li><a href='#' class="export">Export</a></li>
                 <li><a href='#'>Save</a></li>
                 <li><a href='#' class='show-help'>Help</a></li>
             </ul>
@@ -153,6 +153,27 @@
 </div>
 
 
+<div id="export" class="modal">
+    <div class="header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Export</h3>
+    </div>
+    <div class="body">
+        <p>
+            Your file in ELRC format.<br>
+            <em><i class="icon-exclamation-sign"></i>Currently, this is
+            dumb and will break text into lines after a fixed number of
+            words.</em>
+        </p>
+        <textarea></textarea><br>
+    </div>
+    <div class="footer">
+        <a href="#" class="button">Load</a>
+    </div>
+</div>
+
+
+
 <script src="merged.js"></script>
 <script>
     $(function() {
@@ -189,10 +210,11 @@
         updatePosition();
 
         // Enable export/import buttons
-        $('.export').click(function() {
-            $.colorbox({html: '<textarea id="export">'+lyrics.toELRC()+'</textarea>'});
-        });
         $('.import-lyrics').click(function() { $('#import').modal(); });
+        $('.export').click(function() {
+            $('#export textarea').val(lyrics.toELRC());
+            $('#export').modal();
+        });
         $('.show-help').click(function() { $('#help').modal(); });
         $('#help .button').click(function() { $('#help').modal('hide'); });
         $('.save').click(function() {
