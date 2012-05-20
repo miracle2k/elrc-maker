@@ -10,3 +10,5 @@ Line breaks are a problem for the mouse mode, when you have the move the mouse
 all the way to the left. A possible solution is a scrolling lyrics window.
 Moving the mouse cursor to the next line automatically is also imaginable in
 theory, but not supported by Javascript.
+
+Refactor the stuff in index.html into some kind of App class.

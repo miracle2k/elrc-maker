@@ -184,7 +184,7 @@
         audio.addEventListener('durationchange',
             function() { lyrics.duration = audio.duration; });
 
-        // Enable speed controls
+        // Setup speed controls
         function setPlaybackRate(rate) {
             var newRate = audio.playbackRate;
             if (rate.constructor == Number)
@@ -200,6 +200,7 @@
         $('.slower').click(function() { setPlaybackRate('-0.1'); });
         setPlaybackRate(1.0);
 
+        // Setup position display
         function updatePosition() {
             var text;
             if (audio.readyState == audio.HAVE_NOTHING)
@@ -214,7 +215,7 @@
         audio.addEventListener('loadedmetadata', updatePosition);
         updatePosition();
 
-        // Enable export/import buttons
+        // Setup toolbar buttons
         $('.import-lyrics').click(function() {
             // If lyrics are currently loaded, add them to the import dialog
             // to allow editing them (albeit with loss of timestamps set).
@@ -231,6 +232,7 @@
             $('#export').modal();
         });
         $('.export').on('dragstart', function(e) {
+            // Allow drag&drop from export button to desktop
             e.originalEvent.dataTransfer.setData("DownloadURL",
                 "application/octet-stream:"+(loadedFilename || 'export')+
                         ".lrc:data:application/octet-stream," +
@@ -270,14 +272,6 @@
             // Close dialog
             $('#import').modal('hide');
         });
-
-        // Load lyrics from localStorage if there is anything
-        if (localStorage['lyrics']) {
-            lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
-            lyricsBox.setLyrics(lyrics);
-            $('#introduction').hide();
-            $('#lyrics').show();
-        }
 
         // Enable drag&drop of audio files
         $(document).on('dragenter dragover', function(e) {
@@ -319,39 +313,18 @@
             return false;
         });
 
-        // Keyboard shortcuts to skip forward/backward/change speed.
-        $(document).on('keydown', function(e) {
-            if (e.keyCode == 38) { // up
-                setPlaybackRate('+0.1');
-                return false;
-            }
-            else if (e.keyCode == 40) {  // down
-                setPlaybackRate('-0.1');
-                return false;
-            }
-            else if (e.keyCode == 32) {  // space
-                if (audio.paused) {
-                    audio.play();
-                    return false;
-                }
-                else if (e.ctrlKey) {
-                    audio.pause();
-                    return false;
-                }
-            }
-            else if (e.keyCode == 37) {  // left
-                if (e.ctrlKey) {
-                    audio.currentTime -= 1;
-                    return false;
-                }
-            }
-            else if (e.keyCode == 39) {  // right
-                if (e.ctrlKey) {
-                    audio.currentTime += 1;
-                    return false;
-                }
-            }
-        });
+        // Enable keyboard shortcuts
+        var shortcuts = Shortcuts(audio, setPlaybackRate);
+
+
+        // Load lyrics from localStorage if there is anything
+        if (localStorage['lyrics']) {
+            lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
+            lyricsBox.setLyrics(lyrics);
+            $('#introduction').hide();
+            $('#lyrics').show();
+        }
+
 
         window.geLyrics = function() { return lyrics };
     });

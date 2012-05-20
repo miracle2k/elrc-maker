@@ -20,4 +20,5 @@ bundles:
              - https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
              - bootstrap/js/bootstrap-modal.js
              - js/utils.js
+             - js/shortcuts.js
              - js/lyrics.js
