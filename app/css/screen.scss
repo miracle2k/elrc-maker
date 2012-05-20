@@ -36,7 +36,8 @@ a:hover {
 
 @import "bootstrap";
 
-.button { @include button; }
+.button, button { @include button; }
+
 
 
 body {
@@ -58,6 +59,11 @@ body {
   ul {
     @include navbar-links;
     float: right
+  }
+
+  button {
+    @include button-navbar;
+    @include button-info;
   }
 }
 

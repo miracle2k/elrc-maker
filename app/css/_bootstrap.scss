@@ -205,6 +205,13 @@ $navbarHeight: 40px;
   }
 }
 
+@mixin button-navbar {
+  display: inline-block;
+  padding: 4px 10px 4px;
+  margin: 5px 5px 6px;
+  line-height: 18px;
+}
+
 @mixin button-large {
   padding: 9px 14px;
   font-size: $baseFontSize + 2px;

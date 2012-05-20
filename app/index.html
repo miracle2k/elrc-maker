@@ -11,11 +11,10 @@
 <div id="controls">
     <div>
         <div class="container">
-                <button class='btn faster'>Faster</button>
-                <button class='btn slower'>Slower</button>
-                Speed: <span class='speed'>1.0</span>
-                Position: <span class='position'>-</span>
-
+            <button class='faster'>Faster</button>
+            <button class='slower'>Slower</button>
+            Speed: <span class='speed'>1.0</span> &bull;
+            Position: <span class='position'>-</span>
 
             <ul>
                 <li><a href='#' class='import-lyrics'>Import</a></li>
@@ -173,7 +172,6 @@
 </div>
 
 
-
 <script src="merged.js"></script>
 <script>
     $(function() {
@@ -203,11 +201,17 @@
         setPlaybackRate(1.0);
 
         function updatePosition() {
-            $('.position').text(
-                Lyrics.toTimer(audio.currentTime) + ' / ' +
-                Lyrics.toTimer(audio.duration));
+            var text;
+            if (audio.readyState == audio.HAVE_NOTHING)
+                text = Lyrics.toTimer(undefined) + ' / ' +
+                       Lyrics.toTimer(undefined);
+            else
+                text = Lyrics.toTimer(audio.currentTime) + ' / ' +
+                       Lyrics.toTimer(audio.duration)
+            $('.position').text(text);
         }
         audio.addEventListener('timeupdate', updatePosition);
+        audio.addEventListener('loadedmetadata', updatePosition);
         updatePosition();
 
         // Enable export/import buttons
