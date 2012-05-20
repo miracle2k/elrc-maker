@@ -28,7 +28,6 @@
 </div>
 
 <audio controls="controls">
-  <source src="onething.m4a" type="audio/mpeg" />
 </audio>
 
 
@@ -238,22 +237,39 @@
         }
 
         // Enable drag&drop of audio files
-        $('body').on('dragenter dragover', function(e) {
+        $(document).on('dragenter dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
         });
-        $('body').on('drop', function (event) {
-            var data = event.originalEvent.dataTransfer;
+        $(document).on('drop', function (event) {
             // originalEvent required, dataTransfer not in jQuery.event.props
+            var data = event.originalEvent.dataTransfer;
+
+            var audioFound, textFound = false;
             for (var i = 0; i < data.files.length; i++) {
                 var fileReader = new FileReader();
-                fileReader.onload = function(e) {
-                    audio.src = e.target.result;
-                };
-                fileReader.readAsArrayBuffer(data.files[i]);
+                if (data.files[i].type.indexOf('audio/') == 0) {
+                    // Only load the first audio file
+                    if (audioFound) continue;
+                    audioFound = true;
 
-                // Only one file supported
-                break;
+                    fileReader.onload = function(e) {
+                        audio.src = e.target.result;
+                    };
+                    fileReader.readAsDataURL(data.files[i]);
+                }
+                // Assume a text file
+                else {
+                    // Only load the first text file
+                    if (textFound) continue;
+                    textFound = true;
+
+                    fileReader.onload = function(e) {
+                        $('#import textarea').val(e.target.result);
+                        $('#import').modal();
+                    };
+                    fileReader.readAsText(data.files[i]);
+                }
             }
             return false;
         });
