@@ -180,6 +180,7 @@
         // Currently loaded Audio/Lyrics
         var lyrics = new Lyrics();
         var audio = $('audio')[0];
+        var loadedFilename = null;
 
         // The Lyrics object needs the duration, not available right away.
         audio.addEventListener('durationchange',
@@ -214,6 +215,12 @@
         $('.export').click(function() {
             $('#export textarea').val(lyrics.toELRC());
             $('#export').modal();
+        });
+        $('.export').on('dragstart', function(e) {
+            e.originalEvent.dataTransfer.setData("DownloadURL",
+                "application/octet-stream:"+(loadedFilename || 'export')+
+                        ".lrc:data:application/octet-stream," +
+                        encodeURIComponent(lyrics.toELRC()));
         });
         $('.show-help').click(function() { $('#help').modal(); });
         $('#help .button').click(function() { $('#help').modal('hide'); });
@@ -275,8 +282,10 @@
                     if (audioFound) continue;
                     audioFound = true;
 
+                    var theFilename = data.files[i].fileName;
                     fileReader.onload = function(e) {
                         audio.src = e.target.result;
+                        loadedFilename = theFilename;
                     };
                     fileReader.readAsDataURL(data.files[i]);
                 }
