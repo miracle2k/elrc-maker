@@ -143,17 +143,11 @@ audio {
 }
 
 
-#import {
+#import, #export {
   textarea {
-    width: 90%;
-    height: 350px;
-  }
-}
-
-#export {
-  textarea {
-    width: 500px;
-    height: 800px;  // Would be cool if this could be % of window height
-    max-height: 800px;
+    resize: none;
+    width: 100%;
+    height: 300px;
+    border: 1px solid #aaa;
   }
 }
