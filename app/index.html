@@ -211,7 +211,17 @@
         updatePosition();
 
         // Enable export/import buttons
-        $('.import-lyrics').click(function() { $('#import').modal(); });
+        $('.import-lyrics').click(function() {
+            // If lyrics are currently loaded, add them to the import dialog
+            // to allow editing them (albeit with loss of timestamps set).
+            // Note: Keeping the text originally imported is not good enough,
+            // because it might be a format like JSON, ELRC...
+            if (lyrics.length) {
+                $('#import textarea').val(
+                        $.map(lyrics, function(i) {return i.text}).join(' '));
+            }
+            $('#import').modal();
+        });
         $('.export').click(function() {
             $('#export textarea').val(lyrics.toELRC());
             $('#export').modal();
