@@ -404,10 +404,15 @@ LyricsBox.prototype._assignTime = function(index) {
  */
 LyricsBox.prototype.setKeyboardCursorIndex = function(index) {
     // Validate the incoming value. If no index is given, reset to 0.
-    index = (index == undefined) ? 0 : index;
-    index = Math.max(0, Math.min(index, this.lyrics.length-1));
-    if (index == this.keyboardCursorIndex)
-        return;
+    // The key behind this construct is that if index == undefined, the
+    // 'has the value changed check' below is not run.
+    if (index == undefined)
+        index = 0
+    else {
+        index = Math.max(0, Math.min(index, this.lyrics.length-1));
+        if (index == this.keyboardCursorIndex)
+            return;
+    }
 
     // Clear the old cursor
     var spans = this.container.find('span');
