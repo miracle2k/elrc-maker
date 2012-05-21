@@ -17,7 +17,7 @@ bundles:
         output: gen/merged.js
         filters: uglifyjs
         contents:
-             - https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
+             - https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js
              - bootstrap/js/bootstrap-modal.js
              - js/utils.js
              - js/shortcuts.js
