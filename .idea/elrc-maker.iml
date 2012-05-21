@@ -5,6 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.sass-cache" />
       <excludeFolder url="file://$MODULE_DIR$/app/.sass-cache" />
       <excludeFolder url="file://$MODULE_DIR$/app/.webassets-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/app/gen" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
