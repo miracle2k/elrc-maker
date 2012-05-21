@@ -88,13 +88,18 @@ ELRCMaker.prototype._setupUI = function() {
     $('#import .button').on('click', function() {
         var text = $('#import textarea').val();
 
-        // Support a special JSON format that only I am using.s
+        // Support a special JSON format that only I am using.
+        var json;
         try {
-            var json = jQuery.parseJSON(text);
-            if (json.text)
-                text = cleanText(json.text);
+            json = jQuery.parseJSON(text);
         }
         catch (e) {}
+        if (json) {
+            if (json.text)
+                text = cleanText(json.text);
+            if (json.audio)
+                this$App.loadAudio(json.audio);
+        }
 
         lyrics = Lyrics.fromText(text, audio.duration);
         lyricsBox.setLyrics(lyrics);
@@ -129,8 +134,7 @@ ELRCMaker.prototype._setupUI = function() {
 
                 var theFilename = data.files[i].fileName;
                 fileReader.onload = function(e) {
-                    this$App.audio.src = e.target.result;
-                    this$App.loadedFilename = theFilename;
+                    this$App.loadAudio(e.target.result, theFilename);
                 };
                 fileReader.readAsDataURL(data.files[i]);
             }
@@ -149,6 +153,12 @@ ELRCMaker.prototype._setupUI = function() {
         }
         return false;
     });
+}
+
+
+ELRCMaker.prototype.loadAudio = function(url, filename) {
+    this.audio.src = url;
+    this.loadedFilename = filename;
 }
 
 
