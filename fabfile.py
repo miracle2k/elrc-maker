@@ -16,7 +16,7 @@ env.hosts = [env.deploy_host]
 
 
 def assets():
-    local('webassets -c assets.yml build')
+    local('webassets -c assets.yml build --production')
 
 
 def deploy():
