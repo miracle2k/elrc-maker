@@ -22,3 +22,4 @@ bundles:
              - js/utils.js
              - js/shortcuts.js
              - js/lyrics.js
+             - js/app.js

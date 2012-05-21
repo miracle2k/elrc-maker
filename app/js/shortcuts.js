@@ -7,14 +7,15 @@
  *
  * @constructor
  */
-Shortcuts = function(audio, setPlaybackRate) {
+Shortcuts = function(app) {
+    var audio = app.audio;
     $(document).on('keydown', function(e) {
         if (e.keyCode == 38) { // up
-            setPlaybackRate('+0.1');
+            app.setPlaybackRate('+0.1');
             return false;
         }
         else if (e.keyCode == 40) {  // down
-            setPlaybackRate('-0.1');
+            app.setPlaybackRate('-0.1');
             return false;
         }
         else if (e.keyCode == 32) {  // space
