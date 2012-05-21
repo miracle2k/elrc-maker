@@ -12,9 +12,13 @@ ELRCMaker = function() {
     var lyricsBox = this.lyricsBox = new LyricsBox('#lyrics', audio);
     this.loadedFilename = null;
 
+    self = this;
+
     // The Lyrics object needs the duration, not available right away.
-    audio.addEventListener('durationchange',
-        function() { lyrics.duration = audio.duration; });
+    $(audio).on('durationchange loadedmetadata',
+        function() {
+            self.lyrics.duration = audio.duration;
+        });
 
     // Install all the UI handlers etc.
     this._setupUI();
