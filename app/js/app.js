@@ -7,7 +7,7 @@
  */
 ELRCMaker = function() {
     // Currently loaded Audio/Lyrics
-    var lyrics = this.lyrics = new Lyrics();
+    this.lyrics = new Lyrics();
     var audio = this.audio = $('audio')[0];
     var lyricsBox = this.lyricsBox = new LyricsBox('#lyrics', audio);
     this.loadedFilename = null;
@@ -28,8 +28,8 @@ ELRCMaker = function() {
 
     // Load lyrics from localStorage if there is anything
     if (localStorage['lyrics']) {
-        lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
-        lyricsBox.setLyrics(lyrics);
+        this.lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
+        lyricsBox.setLyrics(this.lyrics);
         $('#introduction').hide();
         $('#lyrics').show();
     }
@@ -105,11 +105,11 @@ ELRCMaker.prototype._setupUI = function() {
                 this$App.loadAudio(json.audio);
         }
 
-        lyrics = Lyrics.fromText(text, audio.duration);
-        lyricsBox.setLyrics(lyrics);
+        this$App.lyrics = Lyrics.fromText(text, audio.duration);
+        lyricsBox.setLyrics(this$App.lyrics);
 
         // Store in local storage, so it won't be lost in reload
-        localStorage['lyrics'] = JSON.stringify(lyrics);
+        localStorage['lyrics'] = JSON.stringify(this$App.lyrics);
 
         // Hide introduction, show, show lyrics
         $('#introduction').slideUp();
