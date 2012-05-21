@@ -2,3 +2,5 @@
 .webassets-cache/
 /BRANCH_TODO
 /.idea/
+*.pyc
+.fabricrc

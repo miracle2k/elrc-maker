@@ -1,0 +1,2 @@
+deploy_host =
+target_path = /var/www/foo
