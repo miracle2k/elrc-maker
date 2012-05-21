@@ -40,7 +40,6 @@ Lyrics.prototype.setTimeOfWord = function(index, time) {
     // become invalid (due to being older than the current word).
     for (var i=index+1; i<this.length; i++) {
         if (this[i].time && this[i].time <= time) {
-            console.log('remove', i);
             this[i].time = null;
             $(this).trigger('timeChanged', [i, null]);
         }
