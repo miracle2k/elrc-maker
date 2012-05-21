@@ -334,6 +334,14 @@ LyricsBox.prototype.update = function() {
 
             // On right click, start playing from that word's position.
             elem.on('contextmenu', function(e) {
+                // Set the keyboard cursor here
+                self.setKeyboardCursorIndex(index);
+
+                // Bail out now if no audio is loaded
+                if (audio.readyState == audio.HAVE_NOTHING)
+                    return true;
+
+                // Otherwise, go and set the play position
                 var goto = word.time;
                 if (goto == null) {
                     goto = lyrics.getApproximateTime(index);
