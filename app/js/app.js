@@ -26,12 +26,15 @@ ELRCMaker = function() {
     // Enable keyboard shortcuts
     this.shortcuts = Shortcuts(this);
 
-    // Load lyrics from localStorage if there is anything
+    // Load data from localStorage if there is anything
     if (localStorage['lyrics']) {
         this.lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
         lyricsBox.setLyrics(this.lyrics);
         $('#introduction').hide();
         $('#lyrics').show();
+    }
+    if (localStorage['audio']) {
+        this.loadAudio(localStorage['audio'], localStorage['audioFilename']);
     }
 }
 
@@ -92,29 +95,7 @@ ELRCMaker.prototype._setupUI = function() {
     // The load-text dialog.
     $('#import .button').on('click', function() {
         var text = $('#import textarea').val();
-
-        // Support a special JSON format that only I am using.
-        var json;
-        try {
-            json = jQuery.parseJSON(text);
-        }
-        catch (e) {}
-        if (json) {
-            if (json.text)
-                text = cleanText(json.text);
-            if (json.audio)
-                this$App.loadAudio(json.audio);
-        }
-
-        this$App.lyrics = Lyrics.fromText(text, audio.duration);
-        this$App.lyricsBox.setLyrics(this$App.lyrics);
-
-        // Store in local storage, so it won't be lost in reload
-        localStorage['lyrics'] = JSON.stringify(this$App.lyrics);
-
-        // Hide introduction, show, show lyrics
-        $('#introduction').slideUp();
-        $('#lyrics').slideDown();
+        this$App.loadLyrics(text);
 
         // Close dialog
         $('#import').modal('hide');
@@ -150,8 +131,32 @@ ELRCMaker.prototype._setupUI = function() {
                 textFound = true;
 
                 fileReader.onload = function(e) {
-                    $('#import textarea').val(e.target.result);
-                    $('#import').modal();
+                    var text = e.target.result;
+                    // Support a special JSON format that only I am using.
+                    var json;
+                    try {
+                        json = jQuery.parseJSON(text);
+                    }
+                    catch (e) {}
+
+                    // If this is JSON, load directly.
+                    if (json) {
+                        if (json.text)
+                            this$App.loadLyrics(cleanText(json.text));
+                        // Only load the audio if nothing was drag&dropped
+                        // in at the same time.
+                        if (json.audio && !audioFound) {
+                            this$App.loadAudio(json.audio);
+                        }
+                    }
+
+                    // Otherwise, show import dialog
+                    else {
+                        $('#import textarea').val(text);
+                        $('#import').modal();
+                    }
+
+
                 };
                 fileReader.readAsText(data.files[i]);
             }
@@ -160,11 +165,42 @@ ELRCMaker.prototype._setupUI = function() {
     });
 }
 
-
-ELRCMaker.prototype.loadAudio = function(url, filename) {
+/**
+ * Load the given audio url.
+ *
+ * @param url
+ * @param filename Optional, used as a default export filename, for example.
+ * @param initial Set if this is a load from localStorage, so it won't be
+ *    written back there right away (since a data url can be large).
+ */
+ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
     this.audio.src = url;
     this.loadedFilename = filename;
+
+    // Store in local storage, so it won't be lost in reload
+    if (!initial) {
+        localStorage['audio'] = url;
+        localStorage['audioFilename'] = filename;
+    }
 }
+
+/**
+ * Load the given lyrics.
+ *
+ * @param text
+ */
+ELRCMaker.prototype.loadLyrics = function(text) {
+    this.lyrics = Lyrics.fromText(text, this.audio.duration);
+    this.lyricsBox.setLyrics(this.lyrics);
+
+    // Store in local storage, so it won't be lost in reload
+    localStorage['lyrics'] = JSON.stringify(this.lyrics);
+
+    // Hide introduction, show, show lyrics
+    $('#introduction').slideUp();
+    $('#lyrics').slideDown();
+}
+
 
 
 ELRCMaker.prototype.setPlaybackRate = function(rate) {
