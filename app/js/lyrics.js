@@ -44,6 +44,14 @@ Lyrics.prototype.setTimeOfWord = function(index, time) {
             $(this).trigger('timeChanged', [i, null]);
         }
     }
+    // Search earlier words, and validate those as well (remember, the user
+    // can easily jump to a later word and set the time to something earlier).
+    for (var i=index-1; i>=0; i--) {
+        if (this[i].time && this[i].time >= time) {
+            this[i].time = null;
+            $(this).trigger('timeChanged', [i, null]);
+        }
+    }
 }
 
 /**
