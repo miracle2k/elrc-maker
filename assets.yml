@@ -6,7 +6,7 @@ bundles:
     css:
         # Need to run cssutils BEFORE cssprefixer, or cssprefixer
         # stumbles over the comments within @keyframes.
-        filters: cssrewrite,scss,cssutils,cssprefixer
+        filters: scss,cssrewrite,cssutils,cssprefixer
         contents:
             - css/screen.scss
         depends:
