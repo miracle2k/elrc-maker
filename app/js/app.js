@@ -37,8 +37,8 @@ ELRCMaker = function() {
 
 
 ELRCMaker.prototype._setupUI = function() {
-    var audio = this.audio, lyrics = this.lyrics, lyricsBox = this.lyricsBox,
-        this$App = this;
+    // Be sure not to cache ``lyrics``, the object can change.
+    var this$App = this, audio = this.audio;
 
     $('.faster').click(function() { this$App.setPlaybackRate('+0.1'); });
     $('.slower').click(function() { this$App.setPlaybackRate('-0.1'); });
@@ -65,14 +65,15 @@ ELRCMaker.prototype._setupUI = function() {
         // to allow editing them (albeit with loss of timestamps set).
         // Note: Keeping the text originally imported is not good enough,
         // because it might be a format like JSON, ELRC...
-        if (lyrics.length) {
+        if (this$App.lyrics.length) {
             $('#import textarea').val(
-                    $.map(lyrics, function(i) {return i.text}).join(' '));
+                    $.map(this$App.lyrics,
+                          function(i) {return i.text}).join(' '));
         }
         $('#import').modal();
     });
     $('.export').click(function() {
-        $('#export textarea').val(lyrics.toELRC());
+        $('#export textarea').val(this$App.lyrics.toELRC());
         $('#export').modal();
     });
     $('.export').on('dragstart', function(e) {
@@ -80,12 +81,12 @@ ELRCMaker.prototype._setupUI = function() {
         e.originalEvent.dataTransfer.setData("DownloadURL",
             "application/octet-stream:"+(this$App.loadedFilename || 'export')+
                     ".lrc:data:application/octet-stream," +
-                    encodeURIComponent(lyrics.toELRC()));
+                    encodeURIComponent(this$App.lyrics.toELRC()));
     });
     $('.show-help').click(function() { $('#help').modal(); });
     $('#help .button').click(function() { $('#help').modal('hide'); });
     $('.save').click(function() {
-        localStorage['lyrics'] = JSON.stringify(lyrics);
+        localStorage['lyrics'] = JSON.stringify(this$App.lyrics);
     });
 
     // The load-text dialog.
@@ -106,7 +107,7 @@ ELRCMaker.prototype._setupUI = function() {
         }
 
         this$App.lyrics = Lyrics.fromText(text, audio.duration);
-        lyricsBox.setLyrics(this$App.lyrics);
+        this$App.lyricsBox.setLyrics(this$App.lyrics);
 
         // Store in local storage, so it won't be lost in reload
         localStorage['lyrics'] = JSON.stringify(this$App.lyrics);
