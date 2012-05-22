@@ -10,6 +10,10 @@
 Shortcuts = function(app) {
     var audio = app.audio;
     $(document).on('keydown', function(e) {
+        // Do not run any shortcuts if a modal window is active.
+        if ($('.modal-backdrop').is(':visible'))
+            return;
+
         var key = e.keyCode;
 
         if (key == 38) { // up
