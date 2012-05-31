@@ -1,3 +1,5 @@
+Make it harder to lose work (save timestamps in local storage)
+
 Better tooltip over words?
 
 Deal with brackets and stuff
@@ -14,3 +16,15 @@ theory, but not supported by Javascript.
 Tablet mode: Tab, gestures (e.g. swipe left/right ) to replace keyboard.
 
 Loading audio from an URL.
+
+Support WaveForm Display:
+  Mozilla:
+    http://videos-origin.mozilla.org/serv/blizzard/audio-slideshow/#slide1
+    http://www.html5multimedia.com/code/ch11/moz-audio-api-waveform.html
+  Chrome:
+    https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html
+    http://chromium.googlecode.com/svn/trunk/samples/audio/index.html  
+  Libraries:
+    https://github.com/grantgalitz/XAudioJS
+    http://grantgalitz.org/sound_test/
+    http://codebase.es/riffwave/
