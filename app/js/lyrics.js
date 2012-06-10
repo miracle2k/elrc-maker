@@ -78,16 +78,17 @@ Lyrics.prototype.getIndexForTime = function(timestamp)
     for (var i=0; i<this.length; i++)
     {
         var word = this[i];
+        var isLastWord = (i==this.length-1);
 
         // If the last word is not timed, implicitly assume that it is at the
         // end of the audio file.
         var timeOfThisWord = word.time;
-        if (!timeOfThisWord && i==this.length-1)
+        if (!timeOfThisWord && isLastWord)
             timeOfThisWord = this.duration;
 
         // Find the first word with a timestamp later than the
         // one we are looking for.
-        if (timeOfThisWord && timeOfThisWord >= timestamp) {
+        if (isLastWord || (timeOfThisWord && timeOfThisWord >= timestamp)) {
             // Determine the index of ``timestamp`` in between the
             // two timed words.
             var relPosBetweenBounds =
@@ -261,7 +262,8 @@ LyricsBox = function(selector, audio, lyrics) {
     audio.addEventListener('timeupdate', function(e) {
         var index = self.lyrics.getIndexForTime(e.target.currentTime);
         container.find('span').removeClass('current');
-        self.lyrics[index].dom.addClass('current');
+        if (index != undefined)
+            self.lyrics[index].dom.addClass('current');
     });
 
     // Add a class to the lyrics box whenever the audio is playing.
