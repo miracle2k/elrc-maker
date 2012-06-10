@@ -1,12 +1,4 @@
 /**
- * This currently uses jQuery({}} as an event system for non-DOM objects, but
- * if there is any trouble with that (memory leaks? handlers seem to be stored
- * globally, retrieve via $._data()), we could switch to something like
- * https://github.com/Wolfy87/EventEmitter.
- */
-
-
-/**
  * This represents a lyrics file - a sequence of words with timestamps
  * attached.
  *
@@ -16,10 +8,11 @@
  * @constructor
  */
 Lyrics = function(duration) {
+    EventEmitter.apply(this);
     this.duration = duration;
-
 }
 Lyrics.prototype = new Array();
+$.extend(Lyrics.prototype, EventEmitter.extend());
 
 
 /**
@@ -35,7 +28,7 @@ Lyrics.prototype = new Array();
 Lyrics.prototype.setTimeOfWord = function(index, time) {
     var hasChanged = this[index].time != time;
     this[index].time = time;
-    if (hasChanged) $(this).trigger('timeChanged', [index, time]);
+    if (hasChanged) this.emit('timeChanged', index, time);
 
     // If the time was actually deleted, we don't need to / mustn't run the
     // validation passes below.
@@ -47,7 +40,7 @@ Lyrics.prototype.setTimeOfWord = function(index, time) {
     for (var i=index+1; i<this.length; i++) {
         if (this[i].time && this[i].time <= time) {
             this[i].time = null;
-            $(this).trigger('timeChanged', [i, null]);
+            this.emit('timeChanged', i, null);
         }
     }
     // Search earlier words, and validate those as well (remember, the user
@@ -55,7 +48,7 @@ Lyrics.prototype.setTimeOfWord = function(index, time) {
     for (var i=index-1; i>=0; i--) {
         if (this[i].time && this[i].time >= time) {
             this[i].time = null;
-            $(this).trigger('timeChanged', [i, null]);
+            this.emit('timeChanged', i, null);
         }
     }
 }
@@ -379,7 +372,7 @@ LyricsBox.prototype.update = function() {
     }
 
     // As timestamps are assigned and removed, update the style of the words
-    $(this.lyrics).on('timeChanged', function(e, index, time) {
+    this.lyrics.on('timeChanged', function(index, time) {
         var word = container.find('span').eq(index);
         if (time) {
             word.addClass('timed');
