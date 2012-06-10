@@ -195,8 +195,8 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
     //    localStorage['audio'] = url;
     //    localStorage['audioFilename'] = filename;
     //}
-    localStorage['audio'] = null;
-    localStorage['audioFilename'] = null;
+    localStorage.removeItem('audio');
+    localStorage.removeItem('audioFilename');
 }
 
 /**
