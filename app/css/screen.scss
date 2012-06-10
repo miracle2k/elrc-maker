@@ -91,7 +91,7 @@ audio {
 
 // The lyrics box
 @keyframes highlight {
-  from { background: #FF5F4B }
+  from { background: #FF908A; }
   to { background: none; }
 }
 
@@ -104,16 +104,17 @@ audio {
   font-size: 20px;
   line-height: 1.7em;
 
+  $cursor: double 4px red;
   span {
     // Words marked with a timestamp
     &.timed {
-      text-decoration: underline;
+      color: green;
     }
     &.updated {
       animation: highlight 1s;
     }
     &.cursor {
-      border-bottom: dotted 1px green;
+      border-bottom: $cursor;
     }
   }
 
@@ -124,14 +125,13 @@ audio {
     span {
       cursor: pointer;
 
-
       // Current word when playing
       &.current {
-        color: green;
+        color: red;
       }
 
       &:hover {
-        text-decoration: underline;
+        border-bottom: $cursor;
       }
     }
   }
