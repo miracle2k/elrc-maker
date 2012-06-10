@@ -79,12 +79,13 @@ ELRCMaker.prototype._setupUI = function() {
         $('#export textarea').val(this$App.lyrics.toELRC());
         $('#export').modal();
     });
+    $('#export .action').click(function() {
+        window.open('data:'+this$App._makeLyricsUriData(), 'export');
+    });
     $('.export').on('dragstart', function(e) {
         // Allow drag&drop from export button to desktop
-        e.originalEvent.dataTransfer.setData("DownloadURL",
-            "application/octet-stream:"+(this$App.loadedFilename || 'export')+
-                    ".lrc:data:application/octet-stream," +
-                    encodeURIComponent(this$App.lyrics.toELRC()));
+        e.originalEvent.dataTransfer.setData(
+            "DownloadURL", this$App._makeLyricsUriData());
     });
     $('.show-help').click(function() { $('#help').modal(); });
     $('#help .button').click(function() { $('#help').modal('hide'); });
@@ -163,6 +164,14 @@ ELRCMaker.prototype._setupUI = function() {
         }
         return false;
     });
+
+    // Some private methods
+    this._makeLyricsUriData = function() {
+        // Note that this does not include a data: scheme.
+        return "application/octet-stream:"+(this.loadedFilename || 'export')+
+            ".lrc:data:application/octet-stream," +
+            encodeURIComponent(this.lyrics.toELRC());
+    }
 }
 
 /**

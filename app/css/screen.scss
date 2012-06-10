@@ -37,6 +37,7 @@ a:hover {
 @import "bootstrap";
 
 .button, button { @include button; }
+.action { @include button-primary; }
 
 
 
