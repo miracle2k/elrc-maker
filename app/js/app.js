@@ -178,10 +178,14 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
     this.loadedFilename = filename;
 
     // Store in local storage, so it won't be lost in reload
-    if (!initial) {
-        localStorage['audio'] = url;
-        localStorage['audioFilename'] = filename;
-    }
+    // Disable this for now, since larger files (>1.5 MB?) cause Chrome to
+    // hang for multiple minutes before successfully completing.
+    //if (!initial) {
+    //    localStorage['audio'] = url;
+    //    localStorage['audioFilename'] = filename;
+    //}
+    localStorage['audio'] = null;
+    localStorage['audioFilename'] = null;
 }
 
 /**
