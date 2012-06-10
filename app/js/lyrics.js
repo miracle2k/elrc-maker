@@ -33,8 +33,14 @@ Lyrics.prototype = new Array();
  * @param time
  */
 Lyrics.prototype.setTimeOfWord = function(index, time) {
+    var hasChanged = this[index].time != time;
     this[index].time = time;
-    $(this).trigger('timeChanged', [index, time]);
+    if (hasChanged) $(this).trigger('timeChanged', [index, time]);
+
+    // If the time was actually deleted, we don't need to / mustn't run the
+    // validation passes below.
+    if (time == null || time == undefined)
+        return;
 
     // Search subsequent words, and remove any timestamps that have
     // become invalid (due to being older than the current word).
@@ -282,6 +288,11 @@ LyricsBox = function(selector, audio, lyrics) {
                 self.setKeyboardCursorIndex(self.keyboardCursorIndex+1);
                 return false;
             }
+        }
+        else if (e.keyCode == 46) {  // Del key
+            self.lyrics.setTimeOfWord(self.keyboardCursorIndex, null);
+            self.setKeyboardCursorIndex(self.keyboardCursorIndex-1);
+            return false;
         }
         else if (e.keyCode == 39) { // right arrow
             self.setKeyboardCursorIndex(self.keyboardCursorIndex+1);
