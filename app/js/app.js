@@ -7,9 +7,9 @@
  */
 ELRCMaker = function() {
     // Currently loaded Audio/Lyrics
-    this.lyrics = new Lyrics();
     var audio = this.audio = $('audio')[0];
-    var lyricsBox = this.lyricsBox = new LyricsBox('#lyrics', audio);
+    this.lyricsBox = new LyricsBox('#lyrics', audio);
+    this.lyrics = null;
     this.loadedFilename = null;
 
     self = this;
@@ -28,10 +28,9 @@ ELRCMaker = function() {
 
     // Load data from localStorage if there is anything
     if (localStorage['lyrics']) {
-        this.lyrics = Lyrics.fromJSON(localStorage['lyrics'], audio.duration);
-        lyricsBox.setLyrics(this.lyrics);
         $('#introduction').hide();
         $('#lyrics').show();
+        this.loadLyrics(Lyrics.fromJSON(localStorage['lyrics'], audio.duration));
     }
     if (localStorage['audio']) {
         this.loadAudio(localStorage['audio'], localStorage['audioFilename']);
@@ -68,7 +67,7 @@ ELRCMaker.prototype._setupUI = function() {
         // to allow editing them (albeit with loss of timestamps set).
         // Note: Keeping the text originally imported is not good enough,
         // because it might be a format like JSON, ELRC...
-        if (this$App.lyrics.length) {
+        if (this$App.lyrics && this$App.lyrics.length) {
             $('#import textarea').val(
                     $.map(this$App.lyrics,
                           function(i) {return i.text}).join(' '));
@@ -92,9 +91,6 @@ ELRCMaker.prototype._setupUI = function() {
     });
     $('.show-help').click(function() { $('#help').modal(); });
     $('#help .button').click(function() { $('#help').modal('hide'); });
-    $('.save').click(function() {
-        localStorage['lyrics'] = JSON.stringify(this$App.lyrics);
-    });
 
     // The load-text dialog.
     $('#import .button').on('click', function() {
@@ -206,14 +202,24 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
 /**
  * Load the given lyrics.
  *
- * @param text
+ * If a text is given, it will be parsed. However, you can also specify a
+ * lyrics object, in which case this method will simply deal with the required
+ * UI updates etc.
+ *
+ * @param lyrics
  */
-ELRCMaker.prototype.loadLyrics = function(text) {
-    this.lyrics = Lyrics.fromText(text, this.audio.duration);
-    this.lyricsBox.setLyrics(this.lyrics);
+ELRCMaker.prototype.loadLyrics = function(lyrics) {
+    if (!(lyrics instanceof Lyrics))
+        lyrics = Lyrics.fromText(lyrics, this.audio.duration);
+    this.lyrics = lyrics;
+    this.lyricsBox.setLyrics(lyrics);
 
     // Store in local storage, so it won't be lost in reload
-    localStorage['lyrics'] = JSON.stringify(this.lyrics);
+    localStorage['lyrics'] = JSON.stringify(lyrics);
+    // Auto-save feature
+    this.lyrics.on('timeChanged', function(index, time) {
+        localStorage['lyrics'] = JSON.stringify(lyrics);
+    });
 
     // Hide introduction, show, show lyrics
     $('#introduction').slideUp();

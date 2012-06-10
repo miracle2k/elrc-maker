@@ -323,11 +323,24 @@ LyricsBox.prototype.update = function() {
     var audio = this.audio;
     var lyrics = this.lyrics;
 
+    function setTimeForSpan(span, time) {
+        if (time) {
+            span.addClass('timed');
+            span.attr('title', Lyrics.toTimer(time));
+        }
+        else {
+            span.removeClass('timed');
+            span.attr('title', '');
+        }
+    }
+
     // Generate a list of words.
     this.container.empty();
     for (var index = 0; index<this.lyrics.length; index++) {
         var word = this.lyrics[index];
         var elem = $('<span>'+(word.text?word.text:'-')+'</span>');
+        setTimeForSpan(elem, word.time);
+
         // TODO: Can be sped up by using a single handler for all spans.
         (function(word, index)
         {
@@ -374,14 +387,7 @@ LyricsBox.prototype.update = function() {
     // As timestamps are assigned and removed, update the style of the words
     this.lyrics.on('timeChanged', function(index, time) {
         var word = container.find('span').eq(index);
-        if (time) {
-            word.addClass('timed');
-            word.attr('title', Lyrics.toTimer(time));
-        }
-        else {
-            word.removeClass('timed');
-            word.attr('title', '');
-        }
+        setTimeForSpan(word, time);
 
         // Indicate a change of value regardless of whether the timestamp
         // was removed or added.
