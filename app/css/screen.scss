@@ -152,6 +152,15 @@ audio {
 
 #help {
   iframe { vertical-align: middle; }
+  kbd {
+    border: solid 1px #ABABAB;
+    font-size: 12px;
+    padding: 2px 3px;
+    border-radius: 3px;
+  }
+  dd {
+    margin: 0.2em 0em 0.5em 20px;
+  }
 }
 
 #import, #export {
