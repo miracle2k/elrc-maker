@@ -215,7 +215,11 @@ ELRCMaker.prototype.loadLyrics = function(text) {
 }
 
 
-
+/**
+ * Change the playback speed. This ensures minimum/maximum rates rates, and
+ * allows for string values to be passed for relative changes (e.g. "-0.1").
+ * @param rate
+ */
 ELRCMaker.prototype.setPlaybackRate = function(rate) {
     var newRate = this.audio.playbackRate;
     if (rate.constructor == Number)
