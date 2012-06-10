@@ -1,6 +1,8 @@
 debug: merge
 directory: app
 url: /
+config:
+  SASS_DEBUG_INFO: false
 
 bundles:
     css:
