@@ -407,7 +407,7 @@ LyricsBox.prototype.update = function() {
  * Internal usage, does some validation.
  */
 LyricsBox.prototype._assignTime = function(index) {
-    if (this.audio.paused)
+    if (this.audio.readyState == 0 || this.audio.paused)
         return;
     if (index >= this.lyrics.length)
         return;
