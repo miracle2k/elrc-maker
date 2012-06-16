@@ -10,7 +10,7 @@
 Lyrics = function(duration) {
     EventEmitter.apply(this);
     this.duration = duration;
-}
+};
 Lyrics.prototype = new Array();
 $.extend(Lyrics.prototype, EventEmitter.extend());
 
@@ -51,7 +51,7 @@ Lyrics.prototype.setTimeOfWord = function(index, time) {
             this.emit('timeChanged', i, null);
         }
     }
-}
+};
 
 /**
  * Return the word index for the given timestamp.
@@ -165,7 +165,7 @@ Lyrics.prototype.toELRC = function() {
         wordsInLine += 1;
     }
     return result;
-}
+};
 
 
 /**
@@ -177,7 +177,7 @@ Lyrics.prototype.toJSON = function() {
     // Do not include the dom element.
     return $.map(this, function(item) {
         return {text:item.text, time:item.time}; })
-}
+};
 
 
 /**
@@ -191,7 +191,7 @@ Lyrics.fromJSON = function(json, duration) {
     var lyrics = new Lyrics(duration);
     lyrics.push.apply(lyrics, words);
     return lyrics;
-}
+};
 
 
 /**
@@ -209,7 +209,7 @@ Lyrics.fromText = function(text, duration) {
     var lyrics = new Lyrics(duration);
     lyrics.push.apply(lyrics, splitted);
     return lyrics;
-}
+};
 
 
 /**
@@ -400,7 +400,7 @@ LyricsBox.prototype.update = function() {
             word.removeClass('updated');
         });
     });
-}
+};
 
 /**
  * Set a time value for the given index, if possible.
@@ -414,7 +414,7 @@ LyricsBox.prototype._assignTime = function(index) {
         return;
     this.lyrics.setTimeOfWord(index, this.audio.currentTime);
     return true;
-}
+};
 
 
 /**
@@ -427,7 +427,7 @@ LyricsBox.prototype.setKeyboardCursorIndex = function(index) {
     // The key behind this construct is that if index == undefined, the
     // 'has the value changed check' below is not run.
     if (index == undefined)
-        index = 0
+        index = 0;
     else {
         index = Math.max(0, Math.min(index, this.lyrics.length-1));
         if (index == this.keyboardCursorIndex)
@@ -443,4 +443,4 @@ LyricsBox.prototype.setKeyboardCursorIndex = function(index) {
 
     // Set the new cursor
     spans.eq(this.keyboardCursorIndex).addClass('cursor');
-}
+};

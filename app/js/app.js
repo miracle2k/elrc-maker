@@ -35,7 +35,7 @@ ELRCMaker = function() {
     if (localStorage['audio']) {
         this.loadAudio(localStorage['audio'], localStorage['audioFilename']);
     }
-}
+};
 
 
 ELRCMaker.prototype._setupUI = function() {
@@ -174,7 +174,7 @@ ELRCMaker.prototype._setupUI = function() {
             ":data:application/octet-stream," +
             encodeURIComponent(this.lyrics.toELRC());
     }
-}
+};
 
 /**
  * Load the given audio url.
@@ -197,7 +197,7 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
     //}
     localStorage.removeItem('audio');
     localStorage.removeItem('audioFilename');
-}
+};
 
 /**
  * Load the given lyrics.
@@ -224,7 +224,7 @@ ELRCMaker.prototype.loadLyrics = function(lyrics) {
     // Hide introduction, show, show lyrics
     $('#introduction').slideUp();
     $('#lyrics').slideDown();
-}
+};
 
 
 /**
@@ -241,4 +241,4 @@ ELRCMaker.prototype.setPlaybackRate = function(rate) {
     newRate = Math.min(Math.max(newRate, 0.5), 4.0);
     this.audio.playbackRate = newRate;
     $('#controls .speed').text(newRate.toFixed(3));
-}
+};
