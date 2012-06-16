@@ -7,17 +7,17 @@
  */
 ELRCMaker = function() {
     // Currently loaded Audio/Lyrics
-    var audio = this.audio = $('audio')[0];
-    this.lyricsBox = new LyricsBox('#lyrics', audio);
+    var media = this.media = $('video')[0];
+    this.lyricsBox = new LyricsBox('#lyrics', media);
     this.lyrics = null;
     this.loadedFilename = null;
 
     self = this;
 
     // The Lyrics object needs the duration, not available right away.
-    $(audio).on('durationchange loadedmetadata',
+    $(media).on('durationchange loadedmetadata',
         function() {
-            self.lyrics.duration = audio.duration;
+            self.lyrics.duration = media.duration;
         });
 
     // Install all the UI handlers etc.
@@ -30,17 +30,17 @@ ELRCMaker = function() {
     if (localStorage['lyrics']) {
         $('#introduction').hide();
         $('#lyrics').show();
-        this.loadLyrics(Lyrics.fromJSON(localStorage['lyrics'], audio.duration));
+        this.loadLyrics(Lyrics.fromJSON(localStorage['lyrics'], media.duration));
     }
-    if (localStorage['audio']) {
-        this.loadAudio(localStorage['audio'], localStorage['audioFilename']);
+    if (localStorage['media']) {
+        this.loadMedia(localStorage['media'], localStorage['mediaFilename']);
     }
 };
 
 
 ELRCMaker.prototype._setupUI = function() {
     // Be sure not to cache ``lyrics``, the object can change.
-    var this$App = this, audio = this.audio;
+    var this$App = this, media = this.media;
 
     $('.faster').click(function() { this$App.setPlaybackRate('+0.1'); });
     $('.slower').click(function() { this$App.setPlaybackRate('-0.1'); });
@@ -49,16 +49,16 @@ ELRCMaker.prototype._setupUI = function() {
     // Setup position display
     function updatePosition() {
         var text;
-        if (audio.readyState == audio.HAVE_NOTHING)
+        if (media.readyState == media.HAVE_NOTHING)
             text = Lyrics.toTimer(undefined) + ' / ' +
                    Lyrics.toTimer(undefined);
         else
-            text = Lyrics.toTimer(audio.currentTime) + ' / ' +
-                   Lyrics.toTimer(audio.duration)
+            text = Lyrics.toTimer(media.currentTime) + ' / ' +
+                   Lyrics.toTimer(media.duration)
         $('.position').text(text);
     }
-    audio.addEventListener('timeupdate', updatePosition);
-    audio.addEventListener('loadedmetadata', updatePosition);
+    media.addEventListener('timeupdate', updatePosition);
+    media.addEventListener('loadedmetadata', updatePosition);
     updatePosition();
 
     // Setup toolbar buttons
@@ -110,17 +110,20 @@ ELRCMaker.prototype._setupUI = function() {
         // originalEvent required, dataTransfer not in jQuery.event.props
         var data = event.originalEvent.dataTransfer;
 
-        var audioFound, textFound = false;
+        var mediaFound, textFound = false;
         for (var i = 0; i < data.files.length; i++) {
             var fileReader = new FileReader();
-            if (data.files[i].type.indexOf('audio/') == 0) {
-                // Only load the first audio file
-                if (audioFound) continue;
-                audioFound = true;
+            if (data.files[i].type.indexOf('audio/') == 0 ||
+                data.files[i].type.indexOf('video/') == 0) {
+                // Only load the first media file
+                if (mediaFound) continue;
+                mediaFound = true;
 
                 var theFilename = data.files[i].fileName;
+                var isAudio = data.files[i].type.indexOf('audio/')==0;
                 fileReader.onload = function(e) {
-                    this$App.loadAudio(e.target.result, theFilename);
+                    this$App.loadMedia(e.target.result, theFilename);
+                    this$App.setVideoMode(!isAudio);
                 };
                 fileReader.readAsDataURL(data.files[i]);
             }
@@ -145,8 +148,8 @@ ELRCMaker.prototype._setupUI = function() {
                             this$App.loadLyrics(cleanText(json.text));
                         // Only load the audio if nothing was drag&dropped
                         // in at the same time.
-                        if (json.audio && !audioFound) {
-                            this$App.loadAudio(json.audio);
+                        if (json.audio && !mediaFound) {
+                            this$App.loadMedia(json.audio);
                         }
                     }
 
@@ -177,15 +180,15 @@ ELRCMaker.prototype._setupUI = function() {
 };
 
 /**
- * Load the given audio url.
+ * Load the given media url.
  *
  * @param url
  * @param filename Optional, used as a default export filename, for example.
  * @param initial Set if this is a load from localStorage, so it won't be
  *    written back there right away (since a data url can be large).
  */
-ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
-    this.audio.src = url;
+ELRCMaker.prototype.loadMedia = function(url, filename, initial) {
+    this.media.src = url;
     this.loadedFilename = filename;
 
     // Store in local storage, so it won't be lost in reload
@@ -199,6 +202,20 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
     localStorage.removeItem('audioFilename');
 };
 
+
+/**
+ * Show video content, yes or no.
+ *
+ * @param on_or_off
+ */
+ELRCMaker.prototype.setVideoMode = function(on_or_off) {
+    if (on_or_off)
+        $(this.media).addClass('has-video');
+    else
+        $(this.media).removeClass('has-video');
+};
+
+
 /**
  * Load the given lyrics.
  *
@@ -210,7 +227,7 @@ ELRCMaker.prototype.loadAudio = function(url, filename, initial) {
  */
 ELRCMaker.prototype.loadLyrics = function(lyrics) {
     if (!(lyrics instanceof Lyrics))
-        lyrics = Lyrics.fromText(lyrics, this.audio.duration);
+        lyrics = Lyrics.fromText(lyrics, this.media.duration);
     this.lyrics = lyrics;
     this.lyricsBox.setLyrics(lyrics);
 
@@ -233,12 +250,12 @@ ELRCMaker.prototype.loadLyrics = function(lyrics) {
  * @param rate
  */
 ELRCMaker.prototype.setPlaybackRate = function(rate) {
-    var newRate = this.audio.playbackRate;
+    var newRate = this.media.playbackRate;
     if (rate.constructor == Number)
         newRate = rate;
     else
         newRate += parseFloat(rate);
     newRate = Math.min(Math.max(newRate, 0.5), 4.0);
-    this.audio.playbackRate = newRate;
+    this.media.playbackRate = newRate;
     $('#controls .speed').text(newRate.toFixed(3));
 };

@@ -240,19 +240,19 @@ Lyrics.toTimer = function(time, withHours) {
  * timestamps via mouse/keyboard).
  *
  * @param selector DOM element to use as a container.
- * @param audio HTML5 audio element to which the lyrics belong.
+ * @param media HTML5 audio/video element to which the lyrics belong.
  * @param lyrics An instance of ``Lyrics``.
  * @constructor
  */
-LyricsBox = function(selector, audio, lyrics) {
+LyricsBox = function(selector, media, lyrics) {
     this.container = container = $(selector);
-    this.audio = audio;
+    this.media = media;
     this.setLyrics(lyrics);
 
     var self = this;
 
     // While the audio is playing, highlight the current word in the lyrics
-    audio.addEventListener('timeupdate', function(e) {
+    media.addEventListener('timeupdate', function(e) {
         var index = self.lyrics.getIndexForTime(e.target.currentTime);
         container.find('span').removeClass('current');
         if (index != undefined)
@@ -260,9 +260,9 @@ LyricsBox = function(selector, audio, lyrics) {
     });
 
     // Add a class to the lyrics box whenever the audio is playing.
-    audio.addEventListener('play',
+    media.addEventListener('play',
         function() { container.addClass('playing') });
-    audio.addEventListener('pause',
+    media.addEventListener('pause',
         function() { container.removeClass('playing') });
 
     // Disable right click on the whole box. The word have their own
@@ -323,7 +323,7 @@ LyricsBox.prototype.setLyrics = function(lyrics) {
 LyricsBox.prototype.update = function() {
     var self = this;
     var container = this.container;
-    var audio = this.audio;
+    var media = this.media;
     var lyrics = this.lyrics;
 
     function setTimeForSpan(span, time) {
@@ -368,7 +368,7 @@ LyricsBox.prototype.update = function() {
                 self.setKeyboardCursorIndex(index);
 
                 // Bail out now if no audio is loaded
-                if (audio.readyState == audio.HAVE_NOTHING)
+                if (media.readyState == media.HAVE_NOTHING)
                     return true;
 
                 // Otherwise, go and set the play position
@@ -376,8 +376,8 @@ LyricsBox.prototype.update = function() {
                 if (goto == null) {
                     goto = lyrics.getApproximateTime(index);
                 }
-                audio.play();
-                audio.currentTime = goto - 1.5;  // go to shortly before
+                media.play();
+                media.currentTime = goto - 1.5;  // go to shortly before
                 e.preventDefault();
                 return false;
             });
@@ -411,11 +411,11 @@ LyricsBox.prototype.update = function() {
  * Internal usage, does some validation.
  */
 LyricsBox.prototype._assignTime = function(index) {
-    if (this.audio.readyState == 0 || this.audio.paused)
+    if (this.media.readyState == 0 || this.media.paused)
         return;
     if (index >= this.lyrics.length)
         return;
-    this.lyrics.setTimeOfWord(index, this.audio.currentTime);
+    this.lyrics.setTimeOfWord(index, this.media.currentTime);
     return true;
 };
 

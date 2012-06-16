@@ -8,7 +8,7 @@
  * @constructor
  */
 Shortcuts = function(app) {
-    var audio = app.audio;
+    var media = app.media;
     $(document).on('keydown', function(e) {
         // Do not run any shortcuts if a modal window is active.
         if (Shortcuts.modalDialogVisible())
@@ -25,12 +25,12 @@ Shortcuts = function(app) {
             return false;
         }
         else if (key == 32 || key == 13) { // space or return
-            if (audio.paused) {
-                audio.play();
+            if (media.paused) {
+                media.play();
                 return false;
             }
             else if (key == 13 || e.ctrlKey) {  // ctrl+space or return
-                audio.pause();
+                media.pause();
                 return false;
             }
         }
@@ -38,14 +38,14 @@ Shortcuts = function(app) {
                 (e.ctrlKey && key == 37) ||     // left
                 key == '65' ||                  // a
                 key == 100) {                   // numpad 4
-            audio.currentTime -= 1;
+            media.currentTime -= 1;
             return false;
         }
         else if (
                 (e.ctrlKey && key == 39) ||     // right
                 key == 68 ||                    // d
                 key == 102) {                   // numpad 6
-            audio.currentTime += 1;
+            media.currentTime += 1;
             return false;
         }
     });
