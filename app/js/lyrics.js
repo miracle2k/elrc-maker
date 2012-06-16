@@ -272,6 +272,9 @@ LyricsBox = function(selector, audio, lyrics) {
 
     // Setup assigning timestamps by keypress.
     $(document).on('keydown', function(e) {
+        if (Shortcuts.modalDialogVisible())
+            return;
+
         if (e.ctrlKey)
             // Because various ctrl+X keys are used as a global shortcut as
             // well, and this means we don't have to worry about handler order.

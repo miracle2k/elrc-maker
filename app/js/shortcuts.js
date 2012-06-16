@@ -11,7 +11,7 @@ Shortcuts = function(app) {
     var audio = app.audio;
     $(document).on('keydown', function(e) {
         // Do not run any shortcuts if a modal window is active.
-        if ($('.modal-backdrop').is(':visible'))
+        if (Shortcuts.modalDialogVisible())
             return;
 
         var key = e.keyCode;
@@ -49,4 +49,8 @@ Shortcuts = function(app) {
             return false;
         }
     });
-}
+};
+
+Shortcuts.modalDialogVisible = function() {
+    return ($('.modal-backdrop').is(':visible'));
+};
