@@ -18,7 +18,7 @@ bundles:
         filters: uglifyjs
         contents:
              - https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js
-             - https://github.com/Wolfy87/EventEmitter/raw/master/src/EventEmitter.js
+             - https://github.com/Wolfy87/EventEmitter/raw/d861e93313322bfdc6bace839fc14cbd6f7c1971/src/EventEmitter.js
              - https://raw.github.com/eligrey/BlobBuilder.js/master/BlobBuilder.js
              - https://raw.github.com/eligrey/FileSaver.js/master/FileSaver.js
              - bootstrap/js/bootstrap-modal.js
